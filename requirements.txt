@@ -1,0 +1,8 @@
+Flask
+flask-cors
+joblib
+pandas
+scikit-learn
+requests
+beautifulsoup4
+gunicorn
