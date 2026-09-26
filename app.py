@@ -13,7 +13,6 @@ from explanation_service import generate_explanation, generate_ai_summary
 app = Flask(__name__)
 CORS(app)
 
-
 # ---------------------------------------
 # Load trained ML model
 # ---------------------------------------
@@ -74,6 +73,7 @@ def predict():
         page_analysis_failed = page_features.get("analysis_failed", 0)
         page_features.pop("analysis_failed", None)
 
+
         # ---------------------------------------
         # 3. Combine URL + webpage features
         # ---------------------------------------
@@ -117,16 +117,18 @@ def predict():
         # ---------------------------------------
         # 7. Convert prediction to result
         # ---------------------------------------
-             # ---------------------------------------
-        # 7. Convert prediction to result
-        # ---------------------------------------
         if int(prediction) == 1:
             result = "phishing"
         else:
             result = "legitimate"
 
-        # If webpage analysis failed, apply additional URL safety checks
+
+        # ---------------------------------------
+        # 8. Additional safety check if
+        #    webpage analysis failed
+        # ---------------------------------------
         if page_analysis_failed:
+
             suspicious_score = 0
 
             url_lower = url.lower()
@@ -164,6 +166,11 @@ def predict():
 
             if suspicious_score >= 4:
                 result = "phishing"
+
+
+        # ---------------------------------------
+        # 9. Generate explanation and AI summary
+        # ---------------------------------------
         feature_dict = dict(zip(expected_features, features))
 
         explanation = generate_explanation(
@@ -172,15 +179,17 @@ def predict():
             confidence,
             feature_dict
         )
+
         ai_summary = generate_ai_summary(
             url,
             result,
             confidence,
-            explanation 
+            explanation
         )
 
+
         # ---------------------------------------
-        # 8. Send response
+        # 10. Send response
         # ---------------------------------------
         return jsonify({
 
@@ -192,14 +201,17 @@ def predict():
 
             "features_used": len(features),
 
-           "message": (
+            "message": (
                 "Website classified as phishing"
-                 if result == "phishing"
-                 else
-                "Website classified as legitimate"
+                if result == "phishing"
+                else "Website classified as legitimate"
             ),
+
             "explanation": explanation,
-            "ai_summary": ai_summary        })
+
+            "ai_summary": ai_summary
+
+        })
 
 
     except Exception as e:
