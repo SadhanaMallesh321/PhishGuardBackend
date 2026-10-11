@@ -9,7 +9,15 @@ from feature_extractor import (
     apply_page_features
 )
 from page_analyzer import analyze_page
-from explanation_service import generate_explanation, generate_ai_summary
+from explanation_service import (generate_explanation, generate_ai_summary)
+import inspect
+import explanation_service
+
+print("Explanation service file:", explanation_service.__file__)
+print(
+    "Explanation function signature:",
+    inspect.signature(generate_explanation)
+)
 
 app = Flask(__name__)
 CORS(app)
