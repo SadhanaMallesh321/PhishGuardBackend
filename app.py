@@ -1,3 +1,4 @@
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import joblib
@@ -50,6 +51,11 @@ def predict():
             return jsonify({
                 "error": "URL is required"
             }), 400
+
+        language = str(data.get("language", "english")).lower()
+
+        if language not in ("english", "kannada", "hindi"):
+            language = "english"
 
         url = data["url"].strip()
 
@@ -177,15 +183,20 @@ def predict():
             url,
             result,
             confidence,
-            feature_dict
+            feature_dict,
+            language=language
         )
 
         ai_summary = generate_ai_summary(
             url,
             result,
             confidence,
-            explanation
+            explanation,
+            language=language
         )
+        print("Selected language:", language)
+        print("Explanation:", explanation)
+        print("AI summary:", ai_summary)
 
 
         # ---------------------------------------
